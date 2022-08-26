@@ -1,32 +1,55 @@
-import { useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { useCallback } from 'react';
+import { View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import api from './src/api';
+import * as SplashScreen from 'expo-splash-screen';
+import { ThemeProvider } from 'styled-components';
+
+import {
+  useFonts,
+  Lato_400Regular,
+  Lato_700Bold,
+  Lato_900Black
+} from '@expo-google-fonts/lato';
+
+import theme from './src/styles/theme';
+
+import Home from './src/screens/Home';
+
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  async function test() {
-    const response = await api.get("lists/current/hardcover-fiction.json");
+  const [ fontsLoaded ] = useFonts({
+    Lato_400Regular,
+    Lato_700Bold,
+    Lato_900Black
+  });
 
-    console.log('response', JSON.stringify(response, null, 2))
+  // async function test() {
+  //   const response = await api.get("lists/current/hardcover-fiction.json");
+
+  //   console.log('response', JSON.stringify(response, null, 2))
+  // }
+
+  // useEffect(() => {
+  //   test();
+  // }, [])
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
   }
 
-  useEffect(() => {
-    test();
-  }, [])
-
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <ThemeProvider theme={theme}>
+      <View
+        onLayout={onLayoutRootView}
+      >
+        <Home />
+      </View>
+    </ThemeProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
