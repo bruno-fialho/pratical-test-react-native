@@ -13,7 +13,7 @@ import {
 
 import theme from './src/styles/theme';
 
-import Home from './src/screens/Home';
+import { Home } from './src/screens';
 
 SplashScreen.preventAutoHideAsync();
 
